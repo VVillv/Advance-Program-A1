@@ -28,17 +28,52 @@ void Player::turnDirection(TurnDirection turnDirection)
 
 Position Player::getNextForwardPosition()
 {
-    //TODO
+    Position nextPosition = Position(this->position.x, this->position.y); //Create new position
 
-    return this->position;
+    if (this->direction == NORTH)
+    {
+        nextPosition.y -= 1;
+    }
+    else if (this->direction == SOUTH)
+    {
+        nextPosition.y += 1;                    //get next position
+    }
+    else if (this->direction == EAST)
+    {
+        nextPosition.x += 1;
+    }
+    else if (this->direction == WEST)
+    {
+        nextPosition.x -= 1;
+    }
+    return nextPosition;
+    
 }
 
 void Player::updatePosition(Position position)
 {
-    //TODO
+    this->position.x = position.x;
+    this->position.y = position.y;
+    this->moves += 1; 
 }
 
 void Player::displayDirection()
 {
-    //TODO
+    if (this->direction == NORTH)
+    {
+        std::cout << DIRECTION_ARROW_OUTPUT_NORTH;
+    }
+    else if (this->direction == SOUTH)
+    {
+        std::cout << DIRECTION_ARROW_OUTPUT_SOUTH;
+    }
+    else if (this->direction == EAST)
+    {
+        std::cout << DIRECTION_ARROW_OUTPUT_EAST;
+    }
+    else if (this->direction == WEST)
+    {
+        std::cout << DIRECTION_ARROW_OUTPUT_WEST;
+    }
+        
 }

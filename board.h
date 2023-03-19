@@ -35,6 +35,10 @@ class Board
 
 private:
     std::vector<std::vector<Cell>>* board;
+    bool initialised;
+
+    void printBoard();
+    void printBoard(Player* player);
 
 public:
 
@@ -98,6 +102,7 @@ public:
 
     */
     void display(Player* player);
+    bool isInitialised();
 };
 
 

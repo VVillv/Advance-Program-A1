@@ -38,7 +38,8 @@ public:
 
 class Player
 {
-
+private:
+	bool initialised;
 public:
 
 	Position position; // x,y coordinates
@@ -95,6 +96,8 @@ public:
 	 *     printf(DIRECTION_ARROW_OUTPUT_NORTH);
 	 */
 	void displayDirection();
+
+	bool isInitialised();
 };
 
 #endif

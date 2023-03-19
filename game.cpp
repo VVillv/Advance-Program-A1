@@ -2,18 +2,33 @@
 
 Game::Game()
 {
-    // TODO
+    board = new Board();
+    player = new Player();
+    state = INTRO;
 }
 
 Game::~Game()
 {
-    // TODO
+    delete(board);
+    delete(player);
 }
 
 
 void Game::start()
 {
-    //TODO
+    printGameCommands();
+    std::cout << std::endl << "Press enter to continue" << std::endl;
+    std::cout << std::endl;                                                 //option 1 game menu
+    std::cin.get();
+    board->display(player);
+
+    if (loadBoard())
+    {
+        if(initializePlayer())
+        {
+            play();
+        }
+    }
 }
 
 bool Game::loadBoard()
@@ -30,5 +45,13 @@ bool Game::initializePlayer()
 
 void Game::play()
 {
-    //TODO
+
+}
+
+
+bool Game::shouldTerminate()
+{
+    if (state == END)
+        return true;
+    return false;
 }

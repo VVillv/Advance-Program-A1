@@ -32,17 +32,26 @@ const vector<vector<Cell>> Board::BOARD_2 =
 
 Board::Board()
 {
-    // TODO
+    this->board = new vector<vector<Cell>>();
+    this->initialised = false;
 }
 
 Board::~Board()
 {
-    // TODO
+    delete(board);
 }
 
-void Board::load(int boardId)
+void Board::load(int boardID)
 {
-    // TODO
+    if ((boardID = 1))
+    {
+        std::copy(BOARD_1.begin(), BOARD_1.end(), std::back_inserter(*board));                  //get board to copy
+    }
+    else if ((boardID = 2))
+    {
+        std::copy(BOARD_2.begin(), BOARD_2.end(), std::back_inserter(*board));
+    }
+    this->initialised = true;
 }
 
 bool Board::placePlayer(Position position)
@@ -57,9 +66,19 @@ PlayerMove Board::movePlayerForward(Player* player)
     return PLAYER_MOVED;
 }
 
+bool Board::isInitialised()
+{
+    return this->initialised;
+}
+
+void Board::printBoard(Player* player)
+{
+    //PrinBoard but with the player in mind
+}
+
 void Board::display(Player* player)
 {
-    // TODO
+
 }
 
 

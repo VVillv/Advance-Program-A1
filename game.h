@@ -22,12 +22,21 @@
 #define DIRECTION_SOUTH "south"
 #define DIRECTION_WEST "west"
 
+enum GameState
+{
+    INTRO,
+    LOAD,
+    GAME,
+    END
+};
+
 class Game
 {
 private:
 
     Board* board;
     Player* player;
+    GameState state;
 
 
     /**
@@ -42,10 +51,28 @@ private:
      */
     bool initializePlayer();
 
+    /*
+    Load the menu up
+    */
+    void loadMenu();
+
+    /*
+    Show the game commands when user puts 1 in menu
+    */
+    void printGameCommands();
+
+    /*
+    show student info when user puts 2 in menu
+    */
+    void showStudentInformation(std::string name, std::string id, std::string email);
+
     /**
      * Play the game and move the player interactively.
      */
     void play();
+ 
+
+
 
 
 public:
@@ -67,6 +94,8 @@ public:
      * error checking, etc...).
      */
     void start();
+
+    bool shouldTerminate();
 };
 
 
