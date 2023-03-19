@@ -18,7 +18,10 @@ Player::Player()
 
 void Player::initialisePlayer(Position* position, Direction direction)
 {
-    //TODO
+    this->position.x = (*position).x;
+    this->position.y = (*position).y;
+    this->direction = direction;
+    this->moves = 0;
 }
 
 void Player::turnDirection(TurnDirection turnDirection)

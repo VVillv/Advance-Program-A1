@@ -34,6 +34,7 @@ Board::Board()
 {
     this->board = new vector<vector<Cell>>();
     this->initialised = false;
+    //board = new vector<vector<Cell>>(DEFAULT_BOARD_DIMENSION, vector<Cell>(DEFAULT_BOARD_DIMENSION, EMPTY));
 }
 
 Board::~Board()
@@ -43,20 +44,29 @@ Board::~Board()
 
 void Board::load(int boardID)
 {
-    if ((boardID = 1))
+    std::vector < std::vector<Cell>> copyBoard;
+    if (boardID == 1)
     {
-        std::copy(BOARD_1.begin(), BOARD_1.end(), std::back_inserter(*board));                  //get board to copy
+        copyBoard = BOARD_1;                //get board to copy
     }
-    else if ((boardID = 2))
+    else if (boardID == 2)
     {
-        std::copy(BOARD_2.begin(), BOARD_2.end(), std::back_inserter(*board));
+        copyBoard = BOARD_2;
     }
-    this->initialised = true;
+
+    int height = copyBoard.size();
+    for (int y = 0; y < height; y++)
+    {
+        int width = copyBoard[y].size();
+        for (int x = 0; x < width; x++)
+        {
+            (*board)[y][x] = copyBoard [y][x];
+        }
+    }
 }
 
 bool Board::placePlayer(Position position)
 {
-    // TODO
     return false; // feel free to revise this line, depending on your implementation.
 }
 
@@ -78,7 +88,40 @@ void Board::printBoard(Player* player)
 
 void Board::display(Player* player)
 {
+    int width = (*board)[0].size();
+    int height = (*board).size();
 
+    std::cout << LINE_OUTPUT << EMPTY_OUTPUT;
+    for (int i = 0; i < width; i++)                     //output top of grid
+    {
+        std::cout << LINE_OUTPUT << i;
+    }
+    std::cout << LINE_OUTPUT << std::endl;
+
+    for (int y = 0; y < height; y++)
+    {
+        std::cout << LINE_OUTPUT << y;
+        for (int x = 0; x < width; x++)
+        {
+            int posValue = (*board)[y][x];          // empty/blocked/player
+
+            if (posValue == EMPTY)
+            {
+                std::cout << LINE_OUTPUT << EMPTY_OUTPUT ;
+            }
+            else if (posValue == BLOCKED)
+            {                                                   //convert that to string
+                std::cout << LINE_OUTPUT << BLOCKED_OUTPUT;
+            }
+            else if (posValue == PLAYER)
+            {
+                std::cout << LINE_OUTPUT;
+                player->displayDirection();
+            }
+        }
+        std::cout << LINE_OUTPUT << std::endl;
+    }
+    std::cout << std::endl;
 }
 
 

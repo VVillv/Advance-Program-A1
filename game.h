@@ -37,6 +37,8 @@ private:
     Board* board;
     Player* player;
     GameState state;
+    Position initialPosition;
+    Direction initialDirection;
 
 
     /**
@@ -56,10 +58,12 @@ private:
     */
     void loadMenu();
 
+
     /*
     Show the game commands when user puts 1 in menu
     */
     void printGameCommands();
+    void showGameCommands(std::string gamechoice);
 
     /*
     show student info when user puts 2 in menu
@@ -70,6 +74,7 @@ private:
      * Play the game and move the player interactively.
      */
     void play();
+    bool shouldTerminate();
  
 
 
@@ -95,7 +100,6 @@ public:
      */
     void start();
 
-    bool shouldTerminate();
 };
 
 
