@@ -2,77 +2,41 @@
 
 Game::Game()
 {
-    board = nullptr;
-    player = nullptr;           //start of the game
-    state = INTRO;
+    board = new Board();
+    player = new Player();           //when press 1
+    
 }
 
 Game::~Game()
 {
-    if (board != nullptr) delete(board);
-    if (player != nullptr) delete(player);
+    delete board;
+    delete player;
 }
 
-void Game::loadMenu()
-{
-    std::cout << "Welcome to Car Board" << std::endl;
-    std::cout << "--------------------" << std::endl;
-    std::cout << "1. Play game" << std::endl;
-    std::cout << "2. Show student's information" << std::endl;
-    std::cout << "3. Quit" << std::endl;
-    std::cout << "Please enter your choice: " << std::flush;
-}
+
 
 void Game::start()
 {
-    while (state == INTRO  || state == LOAD)
-    {
-        if(!this->loadBoard()) return;
-    }
+    printGameCommands();
+    loadBoard();
 
-    if(!this->initializePlayer()) return;
-
-    while(!this->shouldTerminate())
-    {
-        this->play();
-    }
 }
 
 bool Game::loadBoard()
 {
-    if(this->state == INTRO)
-    {
-        this -> loadMenu();
-        std::string choice = Helper::readInput();
-
-        if (choice == "1")
-        {
-            printGameCommands();
-            this->state = LOAD;
-        } 
-        else if (choice == "2")
-        {
-            showStudentInformation("William Truong", "s3946703", "s3945703@student.rmit.edu.au");
-            std::cout <<"\n\n";
-        }
-        else if (choice == "3")
-        {
-            std::cout << "Good bye!\n\n";
-            return false;
-        }
-        else
-        {
-            std::cout<< "ERROR: Invalid Input" << std::endl;
-        }
-    }
-    else if (state == LOAD)
+    bool commandLoop = false;
+    /* if (state == LOAD) */
+    while(commandLoop == false)
     {
         std::string input = Helper::readInput();
+        std::cout << input <<std::endl;
         std::vector<std::string> tokens;
-
+        Helper::splitString(input, tokens, " ");
         if (tokens[0] == "load")
         {
             board = new Board();
+            /* std::vector<std::string> tokens;
+            Helper::splitString(input, tokens, " "); */
             this->board->load(std::stoi(tokens[1]));
             this->board->display(player);
         } 
@@ -108,14 +72,14 @@ bool Game::loadBoard()
         }
         else if (tokens[0] == "quit")
         {
-            return false;
+            return true;
         }
         else 
         {
             std::cout << "ERROR: Invalid Input" << std::endl;
         }
     }
-    return true; // feel free to revise this line, depending on your implementation.
+    return false; // feel free to revise this line, depending on your implementation.
 }
 
 bool Game::initializePlayer()
@@ -137,13 +101,6 @@ void Game::play()
     }
 }
 
-void Game::showStudentInformation(std::string name, std::string id, std::string email)
-{
-    std::cout << " " << std::endl;
-    std::cout << "Full Name: " << name << std::endl;
-    std::cout << "Student Number: " << id << std::endl;
-    std::cout << "Email: " << email << std::endl;
-}
 
 void Game::printGameCommands() {
     std::cout  << " " << std::endl;
@@ -159,6 +116,7 @@ void Game::printGameCommands() {
     std::cout  << "turn_right (or r)" << std::endl;
     std::cout  << "quit" << std::endl;
 }
+
 
 bool Game::shouldTerminate()
 {
