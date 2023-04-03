@@ -2,127 +2,154 @@
 
 Game::Game()
 {
-    board = nullptr;
-    player = nullptr;           //start of the game
-    state = INTRO;
+    board = new Board();
+    player = new Player();           //when press 1
+    
 }
 
 Game::~Game()
 {
-    if (board != nullptr) delete(board);
-    if (player != nullptr) delete(player);
+    delete board;
+    delete player;
 }
 
-void Game::loadMenu()
-{
-    std::cout << "Welcome to Car Board" << std::endl;
-    std::cout << "--------------------" << std::endl;
-    std::cout << "1. Play game" << std::endl;
-    std::cout << "2. Show student's information" << std::endl;
-    std::cout << "3. Quit" << std::endl;
-    std::cout << "Please enter your choice: " << std::flush;
-}
+
 
 void Game::start()
 {
-    while (state == INTRO  || state == LOAD)
-    {
-        if(!this->loadBoard()) return;
-    }
+    printGameCommands();
+    std::cout << "bootycheeks" <<std::endl;
+    std::cout << "Press enter to continue" << std::endl;
+    std::cout << " " << std::endl;                              //Gives user instructions to play
+    std::string input = Helper::readInput();
+    board->display(player);
+    std::cout << "bootycheeks" <<std::endl;
 
-    if(!this->initializePlayer()) return;
-
-    while(!this->shouldTerminate())
+    if (loadBoard())
     {
-        this->play();
+        if (initializePlayer())
+        {
+            play();
+        }
     }
 }
 
 bool Game::loadBoard()
 {
-    if(this->state == INTRO)
-    {
-        this -> loadMenu();
-        std::string choice = Helper::readInput();
+   bool loaded = false;
 
-        if (choice == "1")
+    std::string command;
+    std::vector<std::string> args;
+
+    while (!(loaded) && !(command==COMMAND_QUIT) && !(std::cin.eof()))
+    {
+        std::cout << "At this stage of the program, only three commands are acceptable:" << std::endl;
+        std::cout << "      • load <g>" << std::endl;
+        std::cout << "      • quit" << std::endl;
+        std::cout << " " << std::endl;   
+
+        if (Helper::readCommand(command, args))
         {
-            printGameCommands();
-            this->state = LOAD;
-        } 
-        else if (choice == "2")
-        {
-            showStudentInformation("William Truong", "s3946703", "s3945703@student.rmit.edu.au");
-            std::cout <<"\n\n";
+            if ((command == COMMAND_LOAD) && (args.size() == 1))
+            {
+                if ((args[0] == "1") || (args[0] == "2"))
+                {
+                    int boardID = stoi(args[0]);
+                    board->load(boardID);
+                    board->display(player);
+                    loaded = true;
+                }
+            }
         }
-        else if (choice == "3")
+
+        if (!(loaded) && (command != COMMAND_QUIT) && !(std::cin.eof()))
         {
-            std::cout << "Good bye!\n\n";
-            return false;
-        }
-        else
-        {
-            std::cout<< "ERROR: Invalid Input" << std::endl;
+            Helper::printInvalidInput();
         }
     }
-    else if (state == LOAD)
-    {
-        std::string input = Helper::readInput();
-        std::vector<std::string> tokens;
+    return loaded;
 
-        if (tokens[0] == "load")
-        {
-            board = new Board();
-            this->board->load(std::stoi(tokens[1]));
-            this->board->display(player);
-        } 
-        else if (tokens[0] == "init" && this->board->isInitialised())
-        {
-            std::vector<std::string> initTokens;
-
-            Helper::splitString(tokens[1], initTokens, ",");
-
-            int x = std::stoi(initTokens[0]);
-            int y = std::stoi(initTokens[1]);
-
-            initialPosition = Position(x,y);
-
-            std::string direction = initTokens[2];
-            if (direction == "north") 
-            {
-                initialDirection = NORTH;
-            }
-            else if (direction == "south") 
-            {
-                initialDirection = SOUTH;
-            }
-            else if (direction == "east") 
-            {
-                initialDirection = EAST;
-            }
-            else if (direction == "west") 
-            {
-                initialDirection = WEST;
-            }
-            this->state = GAME;
-        }
-        else if (tokens[0] == "quit")
-        {
-            return false;
-        }
-        else 
-        {
-            std::cout << "ERROR: Invalid Input" << std::endl;
-        }
-    }
-    return true; // feel free to revise this line, depending on your implementation.
 }
 
 bool Game::initializePlayer()
 {
-    player = new Player();
-    player->initialisePlayer(&initialPosition, initialDirection);
-    return true; // feel free to revise this line.
+    bool initialized = false;                   // variable when player is initialized
+    bool boardLoaded = false;
+
+    std::string command;
+    std::vector<std::string> args;
+
+    while (!(initialized) && !(command==COMMAND_QUIT) && !(std::cin.eof()))
+    {
+        std::cout << "At this stage of the program, only three commands are acceptable:" << std::endl;
+        std::cout << "      • load <g>" << std::endl;
+        std::cout << "      • init <x>,<y>,<direction>" << std::endl;
+        std::cout << "      • quit" << std::endl;
+        std::cout << " " << std::endl; 
+
+        boardLoaded = false;
+
+        if (Helper::readCommand(command, args))
+        {
+            if ((command == COMMAND_LOAD) && (args.size() == 1))
+            {
+                if ((args[0] == "1") || (args[0] == "2"))
+                {
+                    int boardID = stoi(args[0]);
+                    board->load(boardID);
+                    boardLoaded = true;
+                }
+            }
+            if ((command == COMMAND_INIT) && (args.size() == 3))
+            {
+                if ((Helper::isNumber(args[0])) && (Helper::isNumber(args[1])))
+                {
+                    int x = std::stoi(args[0]);
+                    int y = std::stoi(args[1]);
+                    Position pos = Position(x, y);
+                    std::string direction = args[2];
+
+                    if ((direction == DIRECTION_NORTH) || (direction == DIRECTION_SOUTH) || (direction == DIRECTION_EAST) || (direction == DIRECTION_WEST))
+                    {
+                        if (board->placePlayer(pos))
+                        {
+                            if (direction == DIRECTION_NORTH)
+                            {
+                                player->initialisePlayer(&pos, NORTH);
+                            }
+                            else if (direction == DIRECTION_SOUTH)
+                            {
+                                player->initialisePlayer(&pos, SOUTH);
+                            }
+                            else if (direction == DIRECTION_EAST)
+                            {
+                                player->initialisePlayer(&pos, EAST);
+                            }
+                            else if (direction == DIRECTION_WEST)
+                            {
+                                player->initialisePlayer(&pos, WEST);
+                            }
+                            initialized = true;
+                        }
+                        else
+                        {
+                            std::cout << "Invalid player placement." << std::endl;
+                            std::cout << " " << std::endl; 
+                        }
+                    }
+                }
+            } 
+        }
+        if (!(initialized) && (command != COMMAND_QUIT) && !(boardLoaded) && !(std::cin.eof()))
+        {
+            Helper::printInvalidInput();
+        }
+        if (!(std::cin.eof()))
+        {
+            board->display(player);
+        }
+    }
+    return initialized;
 }
 
 void Game::play()
@@ -134,16 +161,12 @@ void Game::play()
     else if (state == END)
     {
         std::cout << "Wait, how did u get here?" << std::endl;
-    }
+    } 
+/*     std::string command;
+    std::vector<std::string> args;
+     */
 }
 
-void Game::showStudentInformation(std::string name, std::string id, std::string email)
-{
-    std::cout << " " << std::endl;
-    std::cout << "Full Name: " << name << std::endl;
-    std::cout << "Student Number: " << id << std::endl;
-    std::cout << "Email: " << email << std::endl;
-}
 
 void Game::printGameCommands() {
     std::cout  << " " << std::endl;
@@ -159,6 +182,7 @@ void Game::printGameCommands() {
     std::cout  << "turn_right (or r)" << std::endl;
     std::cout  << "quit" << std::endl;
 }
+
 
 bool Game::shouldTerminate()
 {

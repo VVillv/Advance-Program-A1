@@ -59,3 +59,15 @@ string Helper::readInput()
 
     return input;
 }
+
+bool Helper::readCommand(string command, vector<string> args)
+{
+    string input;
+    std::getline(std::cin, input);
+    if (command == "load" && args.size() == 1) {
+        if (args[0] == "1" || args[0] == "2") {
+            return true; // valid command and argument
+        }
+    }
+    return false; // invalid command or argument
+}

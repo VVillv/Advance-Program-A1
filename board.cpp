@@ -32,36 +32,30 @@ const vector<vector<Cell>> Board::BOARD_2 =
 
 Board::Board()
 {
-    this->board = new vector<vector<Cell>>();
-    this->initialised = false;
-    //board = new vector<vector<Cell>>(DEFAULT_BOARD_DIMENSION, vector<Cell>(DEFAULT_BOARD_DIMENSION, EMPTY));
+    board = new vector<vector<Cell>>(DEFAULT_BOARD_DIMENSION, vector<Cell>(DEFAULT_BOARD_DIMENSION, EMPTY));
 }
 
 Board::~Board()
 {
     delete(board);
+    
 }
 
 void Board::load(int boardID)
 {
-    std::vector < std::vector<Cell>> copyBoard;
-    if (boardID == 1)
+    if (boardID == 1) 
     {
-        copyBoard = BOARD_1;                //get board to copy
+        std::copy(BOARD_1.begin(), BOARD_1.end(), std::back_inserter(*board));
+        this->initialised = true;
     }
-    else if (boardID == 2)
+    else if (boardID == 2)                                                           //get board to copy
     {
-        copyBoard = BOARD_2;
+        std::copy(BOARD_2.begin(), BOARD_2.end(), std::back_inserter(*board));
+        this->initialised = true;
     }
-
-    int height = copyBoard.size();
-    for (int y = 0; y < height; y++)
+    else 
     {
-        int width = copyBoard[y].size();
-        for (int x = 0; x < width; x++)
-        {
-            (*board)[y][x] = copyBoard [y][x];
-        }
+        std::cout << "ERROR: Invalid Input, there are only two boards" << std::endl;
     }
 }
 
