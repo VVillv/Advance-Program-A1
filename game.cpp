@@ -18,57 +18,68 @@ Game::~Game()
 void Game::start()
 {
     printGameCommands();
-    std::cout << "bootycheeks" <<std::endl;
-    std::cout << "Press enter to continue" << std::endl;
-    std::cout << " " << std::endl;                              //Gives user instructions to play
-    std::string input = Helper::readInput();
-    board->display(player);
-    std::cout << "bootycheeks" <<std::endl;
+    loadBoard();
 
-    if (loadBoard())
-    {
-        if (initializePlayer())
-        {
-            play();
-        }
-    }
 }
 
 bool Game::loadBoard()
 {
-   bool loaded = false;
-
-    std::string command;
-    std::vector<std::string> args;
-
-    while (!(loaded) && !(command==COMMAND_QUIT) && !(std::cin.eof()))
+    bool commandLoop = false;
+    /* if (state == LOAD) */
+    while(commandLoop == false)
     {
-        std::cout << "At this stage of the program, only three commands are acceptable:" << std::endl;
-        std::cout << "      • load <g>" << std::endl;
-        std::cout << "      • quit" << std::endl;
-        std::cout << " " << std::endl;   
-
-        if (Helper::readCommand(command, args))
+        std::string input = Helper::readInput();
+        std::cout << input <<std::endl;
+        std::vector<std::string> tokens;
+        Helper::splitString(input, tokens, " ");
+        if (tokens[0] == "load")
         {
-            if ((command == COMMAND_LOAD) && (args.size() == 1))
+            board = new Board();
+            /* std::vector<std::string> tokens;
+            Helper::splitString(input, tokens, " "); */
+            this->board->load(std::stoi(tokens[1]));
+            this->board->display(player);
+        } 
+        else if (tokens[0] == "init" && this->board->isInitialised())
+        {
+            std::vector<std::string> initTokens;
+
+            Helper::splitString(tokens[1], initTokens, ",");
+
+            int x = std::stoi(initTokens[0]);
+            int y = std::stoi(initTokens[1]);
+
+            initialPosition = Position(x,y);
+
+            std::string direction = initTokens[2];
+            if (direction == "north") 
             {
-                if ((args[0] == "1") || (args[0] == "2"))
-                {
-                    int boardID = stoi(args[0]);
-                    board->load(boardID);
-                    board->display(player);
-                    loaded = true;
-                }
+                initialDirection = NORTH;
             }
+            else if (direction == "south") 
+            {
+                initialDirection = SOUTH;
+            }
+            else if (direction == "east") 
+            {
+                initialDirection = EAST;
+            }
+            else if (direction == "west") 
+            {
+                initialDirection = WEST;
+            }
+            this->state = GAME;
         }
-
-        if (!(loaded) && (command != COMMAND_QUIT) && !(std::cin.eof()))
+        else if (tokens[0] == "quit")
         {
-            Helper::printInvalidInput();
+            return true;
+        }
+        else 
+        {
+            std::cout << "ERROR: Invalid Input" << std::endl;
         }
     }
-    return loaded;
-
+    return false; // feel free to revise this line, depending on your implementation.
 }
 
 bool Game::initializePlayer()
