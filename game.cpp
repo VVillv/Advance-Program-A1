@@ -18,9 +18,22 @@ Game::~Game()
 void Game::start()
 {
     printGameCommands();
-    loadBoard();
+    std::cout << "Press enter to continue" << std::endl;
+    std::cout << " " << std::endl;                              //Gives user instructions to play
+    std::string input = Helper::readInput();
+    board->display(player);
+    std::cout << "bootycheeks" <<std::endl;
 
+
+    if (loadBoard())
+    {
+        if (initializePlayer())
+        {
+            play();
+        }
+    }
 }
+
 
 bool Game::loadBoard()
 {
