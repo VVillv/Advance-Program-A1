@@ -38,19 +38,22 @@ Board::Board()
 Board::~Board()
 {
     delete(board);
+    board = nullptr;
     
 }
 
 void Board::load(int boardID)
 {
+    /* std::vector<std::vector<Cell>> copyboard; */
+    
     if (boardID == 1) 
     {
-        std::copy(BOARD_1.begin(), BOARD_1.end(), std::back_inserter(*board));
+        board->assign(BOARD_1.begin(), BOARD_1.end());
         this->initialised = true;
     }
     else if (boardID == 2)                                                           //get board to copy
     {
-        std::copy(BOARD_2.begin(), BOARD_2.end(), std::back_inserter(*board));
+        board->assign(BOARD_2.begin(), BOARD_2.end());
         this->initialised = true;
     }
     else 
@@ -61,24 +64,61 @@ void Board::load(int boardID)
 
 bool Board::placePlayer(Position position)
 {
-    return false; // feel free to revise this line, depending on your implementation.
+    bool validPosition = true;
+
+    int width = (*board)[0].size();
+    int height = (*board).size();
+
+    if ((position.x >= width) || (position.y >= height))
+    {
+        validPosition = false;
+    }
+    else if ((*board)[position.y][position.x] != EMPTY)
+    {
+        validPosition = false;
+    } 
+    else if ((position.x < 0) || (position.y < 0))
+    {
+        validPosition = false;
+    }
+    else
+    {
+        (*board)[position.y][position.x] = PLAYER;
+    }
+    return validPosition;
 }
 
 PlayerMove Board::movePlayerForward(Player* player)
 {
-    // TODO
-    return PLAYER_MOVED;
+    PlayerMove result = PLAYER_MOVED;                   //Variable for the ending placement
+
+    int width = (*board)[0].size();
+    int height = (*board).size();                       //dimensions of board
+
+    Position nextPosition = player->getNextForwardPosition();
+
+    if ((nextPosition.x < 0) || (nextPosition.y < 0))       //off the board
+    {
+        result = OUTSIDE_BOUNDS;
+    }
+    else if ((nextPosition.x >= width) || (nextPosition.y >= height))       //off the board
+    {
+        result = OUTSIDE_BOUNDS;
+    }
+    else if ((*board)[nextPosition.y][nextPosition.x] != EMPTY)     // on obstacle
+    {
+        result = CELL_BLOCKED;
+    }
+    else
+    {
+        (*board)[player->position.y][player->position.x] = EMPTY;
+        (*board)[nextPosition.y][nextPosition.x] = PLAYER;
+        player->updatePosition(nextPosition);
+    }
+
+    return result;
 }
 
-bool Board::isInitialised()
-{
-    return this->initialised;
-}
-
-void Board::printBoard(Player* player)
-{
-    //PrinBoard but with the player in mind
-}
 
 void Board::display(Player* player)
 {
@@ -117,5 +157,4 @@ void Board::display(Player* player)
     }
     std::cout << std::endl;
 }
-
 

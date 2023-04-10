@@ -43,7 +43,7 @@ public:
      */
     static std::string readInput();
 
-    static bool readCommand(std::string command, std::vector<std::string> args);
+    static bool readCommand(std::string& command, std::string& args);
 
     static void printInvalidInput();
 

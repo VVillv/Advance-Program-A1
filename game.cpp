@@ -22,7 +22,6 @@ void Game::start()
     std::cout << " " << std::endl;                              //Gives user instructions to play
     std::string input = Helper::readInput();
     board->display(player);
-    std::cout << "bootycheeks" <<std::endl;
 
 
     if (loadBoard())
@@ -41,7 +40,7 @@ bool Game::loadBoard()
 
 
     std::string command;
-    std::vector<std::string> args;
+    std::string args;
 
 
     while (!(loaded) && !(command==COMMAND_QUIT) && !(std::cin.eof()))
@@ -51,14 +50,16 @@ bool Game::loadBoard()
         std::cout << "      • quit" << std::endl;
         std::cout << " " << std::endl;  
 
+        
 
         if (Helper::readCommand(command, args))
         {
             if ((command == COMMAND_LOAD) && (args.size() == 1))
             {
-                if ((args[0] == "1") || (args[0] == "2"))
+                
+                if ((args == "1") || (args == "2"))
                 {
-                    int boardID = stoi(args[0]);
+                    int boardID = stoi(args);
                     board->load(boardID);
                     board->display(player);
                     loaded = true;
@@ -84,7 +85,7 @@ bool Game::initializePlayer()
     bool boardLoaded = false;
 
     std::string command;
-    std::vector<std::string> args;
+    std::string args;
 
     while (!(initialized) && !(command==COMMAND_QUIT) && !(std::cin.eof()))
     {
@@ -98,23 +99,26 @@ bool Game::initializePlayer()
 
         if (Helper::readCommand(command, args))
         {
-            if ((command == COMMAND_LOAD) && (args.size() == 1))
+            if (command == COMMAND_LOAD)
             {
-                if ((args[0] == "1") || (args[0] == "2"))
+                if ((args == "1") || (args == "2"))
                 {
-                    int boardID = stoi(args[0]);
+                    int boardID = stoi(args);
                     board->load(boardID);
                     boardLoaded = true;
                 }
             }
-            if ((command == COMMAND_INIT) && (args.size() == 3))
+            if (command == COMMAND_INIT)
             {
-                if ((Helper::isNumber(args[0])) && (Helper::isNumber(args[1])))
+                std::vector<std::string> argtokens;
+                Helper::splitString(args, argtokens, ",");
+
+                if ((Helper::isNumber(argtokens[0])) && (Helper::isNumber(argtokens[1])))
                 {
-                    int x = std::stoi(args[0]);
-                    int y = std::stoi(args[1]);
+                    int x = std::stoi(argtokens[0]);
+                    int y = std::stoi(argtokens[1]);
                     Position pos = Position(x, y);
-                    std::string direction = args[2];
+                    std::string direction = argtokens[2];
 
                     if ((direction == DIRECTION_NORTH) || (direction == DIRECTION_SOUTH) || (direction == DIRECTION_EAST) || (direction == DIRECTION_WEST))
                     {
@@ -161,18 +165,56 @@ bool Game::initializePlayer()
 
 void Game::play()
 {
-    if (state == GAME)
+    std::string command;
+    std::string args;
+
+    while (!(command == COMMAND_QUIT))
     {
-        std::string input = Helper::readInput();        //update player and other game logic;
+        std::cout << "At this stage of the program, only four commands area acceptable:" <<std::endl;
+        std::cout << "      • forward" << std::endl;
+        std::cout << "      • turn_left (or l)" << std::endl;
+        std::cout << "      • turn_right (or r)" << std::endl;
+        std::cout << "      • quit" << std::endl;
+
+        if (Helper::readCommand(command,args))
+        {
+            if ((command == COMMAND_FORWARD) || (command == COMMAND_FORWARD_SHORTCUT))
+            {
+                PlayerMove result = board->movePlayerForward(player);
+                if (result == PLAYER_MOVED)
+                {
+                    std::cout << "Player has moved" << std::endl;
+                }
+                else if (result == CELL_BLOCKED)
+                {
+                    std::cout << "Unable to move (CELL IS BLOCKED)" << std::endl;
+                }
+                else if (result == OUTSIDE_BOUNDS)
+                {
+                    std::cout << "Unable to move (OUTSIDE OF BOUNDS)." << std::endl;
+                }
+                std::cout << " " << std::endl; 
+            }
+            else if ((command == COMMAND_TURN_RIGHT) || (command == COMMAND_TURN_RIGHT_SHORTCUT))
+            {
+                player->turnDirection(TURN_RIGHT);
+            }
+            else if ((command == COMMAND_TURN_LEFT) || (command == COMMAND_TURN_LEFT_SHORTCUT))
+            {
+                player->turnDirection(TURN_LEFT);
+            }
+            else if ((command != COMMAND_QUIT))
+            {
+                Helper::printInvalidInput();
+            }
+        } 
+        else 
+        {
+        Helper::printInvalidInput();
+        }
     }
-    else if (state == END)
-    {
-        std::cout << "Wait, how did u get here?" << std::endl;
-    } 
-/*     std::string command;
-    std::vector<std::string> args;
-     */
 }
+
 
 
 void Game::printGameCommands() {

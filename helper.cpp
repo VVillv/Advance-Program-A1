@@ -60,14 +60,22 @@ string Helper::readInput()
     return input;
 }
 
-bool Helper::readCommand(string command, vector<string> args)
-{
+
+
+bool Helper::readCommand(string& command, string& args) {
     string input;
     std::getline(std::cin, input);
-    if (command == "load" && args.size() == 1) {
-        if (args[0] == "1" || args[0] == "2") {
-            return true; // valid command and argument
-        }
+
+    vector<string> tokens;
+    Helper::splitString(input, tokens, " ");
+
+    if (tokens.size() == 0) return false;
+    command = tokens[0];
+    args.clear();
+
+    if (tokens.size() > 1)
+    {
+        args = tokens[1];
     }
-    return false; // invalid command or argument
+    return true;
 }

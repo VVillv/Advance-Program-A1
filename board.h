@@ -11,6 +11,8 @@
 #define BLOCKED_OUTPUT "*"
 #define LINE_OUTPUT "|"
 
+const int ROWS = 10;
+const int COLUMNS = 10;
 
 enum Cell
 {
@@ -102,7 +104,8 @@ public:
 
     */
     void display(Player* player);
-    bool isInitialised();
+
+    
 };
 
 
