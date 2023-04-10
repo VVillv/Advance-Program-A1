@@ -64,7 +64,7 @@ string Helper::readInput()
 
 bool Helper::readCommand(string& command, string& args) {
     string input;
-    std::getline(std::cin, input);
+    std::getline(std::cin, input);                 
 
     vector<string> tokens;
     Helper::splitString(input, tokens, " ");

@@ -34,7 +34,7 @@ void Player::turnDirection(TurnDirection turnDirection)
         {
             this->direction = EAST;
         }
-        else if (this->direction == SOUTH)
+        else if (this->direction == SOUTH)          // Turning right
         {
             this->direction = WEST;
         }
@@ -56,7 +56,7 @@ void Player::turnDirection(TurnDirection turnDirection)
         else if (this->direction == SOUTH)
         {
             this->direction = EAST;
-        }
+        }                                               // Turning left
         else if (this->direction == EAST)
         {
             this->direction = NORTH;
@@ -95,7 +95,7 @@ Position Player::getNextForwardPosition()
 void Player::updatePosition(Position position)
 {
     this->position.x = position.x;
-    this->position.y = position.y;
+    this->position.y = position.y;              // updates positions
     this->moves += 1; 
 }
 
@@ -107,7 +107,7 @@ void Player::displayDirection()
     }
     else if (this->direction == SOUTH)
     {
-        std::cout << DIRECTION_ARROW_OUTPUT_SOUTH;
+        std::cout << DIRECTION_ARROW_OUTPUT_SOUTH;          // displays direction arrow
     }
     else if (this->direction == EAST)
     {

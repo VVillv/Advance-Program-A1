@@ -30,7 +30,7 @@ const vector<vector<Cell>> Board::BOARD_2 =
     { EMPTY, BLOCKED, BLOCKED, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY }
 };
 
-Board::Board()
+Board::Board()          //create empty board
 {
     board = new vector<vector<Cell>>(DEFAULT_BOARD_DIMENSION, vector<Cell>(DEFAULT_BOARD_DIMENSION, EMPTY));
 }
@@ -44,8 +44,7 @@ Board::~Board()
 
 void Board::load(int boardID)
 {
-    /* std::vector<std::vector<Cell>> copyboard; */
-    
+    //replaces empty board with board 1 or 2
     if (boardID == 1) 
     {
         board->assign(BOARD_1.begin(), BOARD_1.end());
@@ -64,16 +63,16 @@ void Board::load(int boardID)
 
 bool Board::placePlayer(Position position)
 {
-    bool validPosition = true;
+    bool validPosition = true;                  //init value for whether the position is valid
 
-    int width = (*board)[0].size();
+    int width = (*board)[0].size();             //width and height of board
     int height = (*board).size();
 
     if ((position.x >= width) || (position.y >= height))
     {
         validPosition = false;
     }
-    else if ((*board)[position.y][position.x] != EMPTY)
+    else if ((*board)[position.y][position.x] != EMPTY)             // 
     {
         validPosition = false;
     } 

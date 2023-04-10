@@ -11,6 +11,8 @@ Game::~Game()
 {
     delete board;
     delete player;
+    board = nullptr;
+    player = nullptr;
 }
 
 
@@ -26,7 +28,7 @@ void Game::start()
 
     if (loadBoard())
     {
-        if (initializePlayer())
+        if (initializePlayer())             // Main game
         {
             play();
         }
@@ -36,14 +38,14 @@ void Game::start()
 
 bool Game::loadBoard()
 {
-   bool loaded = false;
+   bool loaded = false;                //Outline list of commands to user
 
 
-    std::string command;
+    std::string command;            // Variable for user input
     std::string args;
 
 
-    while (!(loaded) && !(command==COMMAND_QUIT) && !(std::cin.eof()))
+    while (!(loaded) && !(command==COMMAND_QUIT) && !(std::cin.eof()))          // Loop until either quit, eof or the board is loaded
     {
         std::cout << "At this stage of the program, only three commands are acceptable:" << std::endl;
         std::cout << "      • load <g>" << std::endl;
@@ -59,7 +61,7 @@ bool Game::loadBoard()
                 
                 if ((args == "1") || (args == "2"))
                 {
-                    int boardID = stoi(args);
+                    int boardID = stoi(args);                  // Load and display the board
                     board->load(boardID);
                     board->display(player);
                     loaded = true;
@@ -68,7 +70,7 @@ bool Game::loadBoard()
         }
 
 
-        if (!(loaded) && (command != COMMAND_QUIT) && !(std::cin.eof()))
+        if (!(loaded) && (command != COMMAND_QUIT) && !(std::cin.eof()))        // Check if hte board was loaded, if not print invalid input
         {
             Helper::printInvalidInput();
         }
@@ -81,13 +83,13 @@ bool Game::loadBoard()
 
 bool Game::initializePlayer()
 {
-    bool initialized = false;                   // variable when player is initialized
+    bool initialized = false;                               // variable when player is initialized
     bool boardLoaded = false;
 
-    std::string command;
+    std::string command;                                    // Variable for user input
     std::string args;
 
-    while (!(initialized) && !(command==COMMAND_QUIT) && !(std::cin.eof()))
+    while (!(initialized) && !(command==COMMAND_QUIT) && !(std::cin.eof()))             //Loop until either quit, eof or player is initialized
     {
         std::cout << "At this stage of the program, only three commands are acceptable:" << std::endl;
         std::cout << "      • load <g>" << std::endl;
@@ -95,34 +97,34 @@ bool Game::initializePlayer()
         std::cout << "      • quit" << std::endl;
         std::cout << " " << std::endl; 
 
-        boardLoaded = false;
+        boardLoaded = false;                              // Variable to check if the board is loaded in this command
 
-        if (Helper::readCommand(command, args))
+        if (Helper::readCommand(command, args))          // Check user input
         {
-            if (command == COMMAND_LOAD)
+            if (command == COMMAND_LOAD)                // Check command is load
             {
                 if ((args == "1") || (args == "2"))
                 {
-                    int boardID = stoi(args);
+                    int boardID = stoi(args);           //Load and display the board
                     board->load(boardID);
                     boardLoaded = true;
                 }
             }
-            if (command == COMMAND_INIT)
+            if (command == COMMAND_INIT)                // Check the command is init
             {
                 std::vector<std::string> argtokens;
                 Helper::splitString(args, argtokens, ",");
 
-                if ((Helper::isNumber(argtokens[0])) && (Helper::isNumber(argtokens[1])))
+                if ((Helper::isNumber(argtokens[0])) && (Helper::isNumber(argtokens[1])))           //Checks 1st and 2nd argtokens are integers
                 {
                     int x = std::stoi(argtokens[0]);
                     int y = std::stoi(argtokens[1]);
                     Position pos = Position(x, y);
                     std::string direction = argtokens[2];
 
-                    if ((direction == DIRECTION_NORTH) || (direction == DIRECTION_SOUTH) || (direction == DIRECTION_EAST) || (direction == DIRECTION_WEST))
+                    if ((direction == DIRECTION_NORTH) || (direction == DIRECTION_SOUTH) || (direction == DIRECTION_EAST) || (direction == DIRECTION_WEST))             //Check that the direction is North, South, East, West
                     {
-                        if (board->placePlayer(pos))
+                        if (board->placePlayer(pos))                            //Place the player on the board
                         {
                             if (direction == DIRECTION_NORTH)
                             {
@@ -151,7 +153,7 @@ bool Game::initializePlayer()
                 }
             } 
         }
-        if (!(initialized) && (command != COMMAND_QUIT) && !(boardLoaded) && !(std::cin.eof()))
+        if (!(initialized) && (command != COMMAND_QUIT) && !(boardLoaded) && !(std::cin.eof()))         //Check if board was loaded, if not print invalid input
         {
             Helper::printInvalidInput();
         }
@@ -165,10 +167,10 @@ bool Game::initializePlayer()
 
 void Game::play()
 {
-    std::string command;
+    std::string command;            //Variables for user input
     std::string args;
 
-    while (!(command == COMMAND_QUIT))
+    while (!(command == COMMAND_QUIT))          // Loop until quit or EOF
     {
         std::cout << "At this stage of the program, only four commands area acceptable:" <<std::endl;
         std::cout << "      • forward" << std::endl;
@@ -176,9 +178,9 @@ void Game::play()
         std::cout << "      • turn_right (or r)" << std::endl;
         std::cout << "      • quit" << std::endl;
 
-        if (Helper::readCommand(command,args))
+        if (Helper::readCommand(command,args))      //Check input
         {
-            if ((command == COMMAND_FORWARD) || (command == COMMAND_FORWARD_SHORTCUT))
+            if ((command == COMMAND_FORWARD) || (command == COMMAND_FORWARD_SHORTCUT))      // Move Forward
             {
                 PlayerMove result = board->movePlayerForward(player);
                 if (result == PLAYER_MOVED)
@@ -195,11 +197,11 @@ void Game::play()
                 }
                 std::cout << " " << std::endl; 
             }
-            else if ((command == COMMAND_TURN_RIGHT) || (command == COMMAND_TURN_RIGHT_SHORTCUT))
+            else if ((command == COMMAND_TURN_RIGHT) || (command == COMMAND_TURN_RIGHT_SHORTCUT))       //Turn Right
             {
                 player->turnDirection(TURN_RIGHT);
             }
-            else if ((command == COMMAND_TURN_LEFT) || (command == COMMAND_TURN_LEFT_SHORTCUT))
+            else if ((command == COMMAND_TURN_LEFT) || (command == COMMAND_TURN_LEFT_SHORTCUT))     //Turn Left
             {
                 player->turnDirection(TURN_LEFT);
             }
@@ -208,16 +210,17 @@ void Game::play()
                 Helper::printInvalidInput();
             }
         } 
-        else 
+        else if (!(std::cin.eof()))
         {
-        Helper::printInvalidInput();
+            board->display(player);
         }
+        board->display(player);
     }
 }
 
 
 
-void Game::printGameCommands() {
+void Game::printGameCommands() {                // Game instructions
     std::cout  << " " << std::endl;
     std::cout  << "You can use the following commands to play the game:" << std::endl;
     std::cout  << "load <g>" << std::endl;
